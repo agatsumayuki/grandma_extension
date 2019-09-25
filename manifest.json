@@ -6,6 +6,9 @@
 	  "matches": [ "http://*/*", "https://*/*" ],
 	  "js": ["script.js"]
 	} ],
+  "background": {
+    "scripts": ["background.js"]
+  },
 	"page_action": {
 		"default_icon": {
 			"16": "images/grandma_icon_16.png",
