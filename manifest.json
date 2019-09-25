@@ -1,0 +1,24 @@
+{
+	"manifest_version": 2,
+	"name": "おばあちゃんブラウザ",
+	"version": "0.1",
+	"content_scripts": [ {
+	  "matches": [ "http://*/*", "https://*/*" ],
+	  "js": ["script.js"]
+	} ],
+	"page_action": {
+		"default_icon": {
+			"16": "images/grandma_icon_16.png",
+			"48": "images/grandma_icon_48.png",
+			"128": "images/grandma_icon_128.png"
+		}
+	},
+	"icons": {
+		"16": "images/grandma_icon_16.png",
+		"48": "images/grandma_icon_48.png",
+		"128": "images/grandma_icon_128.png"
+	},
+  "web_accessible_resources": [
+    "images/*"
+  ]
+}
