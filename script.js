@@ -63,13 +63,10 @@ function move() {
  * おばあちゃんの画像を配置する
  * @param {Object} payLoad - リクエストするための引数 
  */
-async function coreAPI(payLoad) {
-
-  chrome.runtime.sendMessage(payLoad);
-
-  const result = chrome.runtime.onMessage.addListener(await function(message, sender, sendResponse) {
-    console.log('message in chrome.runtime.onMessage.addListener', message);
-    return message;
+function coreAPI(payLoad) {
+  const result = chrome.runtime.sendMessage(payLoad, function(response) {
+    console.log('response in chrome.runtime.sendMessage', response);
+    return response
   });
 
   console.log('result after chrome.runtime.sendMessage', result);
