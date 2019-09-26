@@ -42,8 +42,8 @@ function deploy(wx, wy) {
 /**
  * おばあちゃんの画像を変化させる
  */
-async function move() {
-  const response = await coreAPI(smileActionGetPayLoad);
+function move() {
+  const response = coreAPI(smileActionGetPayLoad);
   console.log('response in move', response);
 
   // 笑っている時
@@ -63,16 +63,35 @@ async function move() {
  * おばあちゃんの画像を配置する
  * @param {Object} payLoad - リクエストするための引数 
  */
-async function coreAPI(payLoad) {
-
-  async function kickAPI() {
-    chrome.runtime.sendMessage(payLoad, function(response) {
-      console.log('response in chrome.runtime.sendMessage', response);
-      return response
+function coreAPI(payLoad) {
+  
+  const kickAPI = function(payLoad) {
+    return new Promise(function(resolve, reject){
+      if (!!payLoad) {
+        resolve(
+          chrome.runtime.sendMessage(payLoad, function(response) {
+            console.log('response in chrome.runtime.sendMessage', response);
+            return response;
+          })
+        )
+      } else {
+        reject(
+          'API通信エラー'
+        )
+      }
     });
-  }; 
+  };
 
-  const result = await kickAPI(); 
+  const result = kickAPI(payLoad).then(
+    function(response){
+      console.log('response in kickAPI', respones);
+      return response
+    }
+  ).catch(
+    function(error){
+      console.warn('エラーが発生しました' + error);
+    }
+  );
 
   console.log('result after chrome.runtime.sendMessage', result);
 
