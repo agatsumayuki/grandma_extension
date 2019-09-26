@@ -1,3 +1,4 @@
+// 変数をまとめておく
 let store = {
   isSmiling: false,
 }
@@ -8,18 +9,18 @@ let store = {
  * @param {integer} sender - 送り元の情報。この拡張機能のIDや、リクエスト元のURL、tabの情報などが取れる
  * @param {function} sendResponse - 拡張機能ならではの関数。addLitener呼ばれた時に自動で追加される？これを実行して引数にフロントに返したい内容を入れる。
  */
-chrome.runtime.onMessage.addListener( async function(msg, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
   // console.log('msg', msg); // 送られたメッセージをキャッチ
   // console.log('sender', sender);
   // console.log('sendResponse', sendResponse);
 
   if (msg.query == 'smileAction') {
-    await smileAction(msg);
+    smileAction(msg);
   };
 
   console.log('store', store);
-  // sendResponse(store.isSmiling); // sendResponseでmsgを送ったスクリプト側にレスを返せる
-  chrome.tabs.sendMessage(sender.tab.id, store.isSmiling);
+  sendResponse(store.isSmiling); // sendResponseでmsgを送ったスクリプト側にレスを返せる
+  // chrome.tabs.sendMessage(sender.tab.id, store.isSmiling);
 
   return true;
 });
@@ -30,6 +31,7 @@ chrome.runtime.onMessage.addListener( async function(msg, sender, sendResponse) 
  */
 function smileAction(msg) {
   console.log('msg', msg);
+
   if (msg.method == 'get') {
     return store.isSmiling;
   } else if (msg.method == 'patch') {

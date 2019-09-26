@@ -8,13 +8,11 @@ let smileActionGetPayLoad = {
   query: 'smileAction',
   params: null,
 };
-
 let smileActionPostPayLoad = {
   method: 'patch',
   query: 'smileAction',
   params: true,
 };
-
 
 /**
  * おばあちゃんの画像を配置する
@@ -45,61 +43,40 @@ function deploy(wx, wy) {
  * おばあちゃんの画像を変化させる
  */
 async function move() {
-  let response = await coreAPI(smileActionGetPayLoad);
-  console.log('response after await', response);
+  const response = await coreAPI(smileActionGetPayLoad);
+  console.log('response in move', response);
 
+  // 笑っている時
   if (response == true) {
-    console.log('response in the lights', response);
-    document.getElementById('grandma').src = nomalFaceImgUrl;
+    document.getElementById('grandma').src = nomalFaceImgUrl; // 笑うのやめる
     smileActionPostPayLoad.params = false;
     coreAPI(smileActionPostPayLoad);
   }
   
-  document.getElementById('grandma').src = smileFaceImgUrl;
+  // 笑ってない時
+  document.getElementById('grandma').src = smileFaceImgUrl; // 笑わせる
+  smileActionPostPayLoad.params = true;
   coreAPI(smileActionPostPayLoad);
 };
 
+/**
+ * おばあちゃんの画像を配置する
+ * @param {Object} payLoad - リクエストするための引数 
+ */
 async function coreAPI(payLoad) {
 
-  // async function kickAPI(payLoad) {
-  //   await chrome.runtime.sendMessage(payLoad, function(response) {
-  //     console.log('response in kickAPI', response);
-  //     return response
-  //   })
-  // };
+  async function kickAPI() {
+    chrome.runtime.sendMessage(payLoad, function(response) {
+      console.log('response in chrome.runtime.sendMessage', response);
+      return response
+    });
+  }; 
 
-  // const result = await chrome.runtime.sendMessage(payLoad, function() {
-  //   console.log('response in chrome.runtime.sendMessage', response);
-  //   return response
-  // });
+  const result = await kickAPI(); 
 
-  await chrome.runtime.sendMessage(payLoad);
-
-  const result = await chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log('response in chrome.runtime.onMessage', message);
-    return message;
-  });
-
-  console.log('result in the final', result);
+  console.log('result after chrome.runtime.sendMessage', result);
 
   return result;
-
-  // new Promise((resolve, reject) => {
-  //   console.log('payLoad', payLoad);
-  //   resolve(kickAPI(payLoad));
-  // })
-  // .then((response)=>{
-  //   console.log('response in then', response);
-  //   return response
-  // })
-
-  // const result = Promise.resolve().then(
-  //   kickAPI(payLoad)
-  // );
-
-  // console.log('result in final', result);
-
-  // return result;
 };
 
 
