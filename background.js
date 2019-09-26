@@ -39,3 +39,18 @@ function smileAction(msg) {
     return store.isSmiling
   };
 };
+
+
+// chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
+  
+//   if (msg == 'getCurrentTab') {
+//     console.log('chrome.tabs', chrome.tabs)
+//     sendResponse(chrome.tabs);
+//     // chrome.tabs.getCurrent((tab)=> {
+//     //   console.log('tab', tab);  
+//     //   sendResponse(tab);
+//     // });  
+//   };
+
+//   return true;
+// });
