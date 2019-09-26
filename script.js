@@ -64,19 +64,17 @@ function move() {
  * @param {Object} payLoad - リクエストするための引数 
  */
 async function coreAPI(payLoad) {
- 
-  const getResponse = async function(response) {
-    console.log('response in chrome.runtime.sendMessage', response);
-    return response
-  };
 
-  const result = await chrome.runtime.sendMessage(payLoad, await getResponse(response));
+  chrome.runtime.sendMessage(payLoad);
+
+  const result = chrome.runtime.onMessage.addListener(await function(message, sender, sendResponse) {
+    console.log('message in chrome.runtime.onMessage.addListener', message);
+    return message;
+  });
 
   console.log('result after chrome.runtime.sendMessage', result);
 
   return result;
 };
-
-
 
 deploy(0, 0);
