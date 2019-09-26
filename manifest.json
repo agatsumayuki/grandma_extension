@@ -4,7 +4,7 @@
 	"version": "0.1",
 	"content_scripts": [ {
 	  "matches": [ "http://*/*", "https://*/*" ],
-	  "js": ["script.js"]
+	  "js": ["content_scripts.js"]
 	} ],
 	"page_action": {
 		"default_icon": {
