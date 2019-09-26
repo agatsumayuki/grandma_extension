@@ -63,35 +63,14 @@ function move() {
  * おばあちゃんの画像を配置する
  * @param {Object} payLoad - リクエストするための引数 
  */
-function coreAPI(payLoad) {
-  
-  const kickAPI = function(payLoad) {
-    return new Promise(function(resolve, reject){
-      if (!!payLoad) {
-        resolve(
-          chrome.runtime.sendMessage(payLoad, function(response) {
-            console.log('response in chrome.runtime.sendMessage', response);
-            return response;
-          })
-        )
-      } else {
-        reject(
-          'API通信エラー'
-        )
-      }
-    });
+async function coreAPI(payLoad) {
+ 
+  const getResponse = async function(response) {
+    console.log('response in chrome.runtime.sendMessage', response);
+    return response
   };
 
-  const result = kickAPI(payLoad).then(
-    function(response){
-      console.log('response in kickAPI', respones);
-      return response
-    }
-  ).catch(
-    function(error){
-      console.warn('エラーが発生しました' + error);
-    }
-  );
+  const result = await chrome.runtime.sendMessage(payLoad, await getResponse(response));
 
   console.log('result after chrome.runtime.sendMessage', result);
 
