@@ -2,10 +2,17 @@
 const nomalFaceImgUrl = chrome.runtime.getURL('images/grandma_icon_48.png'); 
 const smileFaceImgUrl = chrome.runtime.getURL('images/grandma_icon_48_smile.png');
 
-// 変数をまとめておく
-let store = {
-  isSmiling: false,
-}
+// APIへのリクエスト準備
+let smileActionGetPayLoad = {
+  method: 'get',
+  query: 'smileAction',
+  params: null,
+};
+let smileActionPostPayLoad = {
+  method: 'patch',
+  query: 'smileAction',
+  params: true,
+};
 
 /**
  * おばあちゃんの画像を配置する
@@ -35,18 +42,33 @@ function deploy(wx, wy) {
 /**
  * おばあちゃんの画像を変化させる
  */
-function move() {
+async function move() {
+  const response = await coreAPI(smileActionGetPayLoad);
+  console.log('response in move', response);
+
   // 笑っている時
-  if (store.isSmiling == true) {
+  if (response == true) {
     document.getElementById('grandma').src = nomalFaceImgUrl; // 笑うのやめる
-    store.isSmiling = false;
-    console.log('store.isSmiling in if context', store.isSmiling);
+    smileActionPostPayLoad.params = false;
+    coreAPI(smileActionPostPayLoad);
   } else {
     // 笑ってない時
     document.getElementById('grandma').src = smileFaceImgUrl; // 笑わせる
-    store.isSmiling = true;
-    console.log('store.isSmiling', store.isSmiling);
-  };
+    smileActionPostPayLoad.params = true;
+    coreAPI(smileActionPostPayLoad);
+  }
+};
+
+/**
+ * background.jsとの通信を行う
+ * @param {Object} payLoad - リクエストするための引数
+ */
+function coreAPI(payLoad) {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(payLoad, (response) => {
+      resolve(response)
+    });
+  });
 };
 
 deploy(0, 0);
