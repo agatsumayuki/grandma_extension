@@ -1,7 +1,28 @@
 // 変数をまとめておく
 let store = {
   isSmiling: false,
+  tabData: {
+    title: '',
+    url: ''
+  },
+  isHardComment: false,
 }
+
+// タブが読み込まれた時に実行する
+chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
+    console.log(tab.url); // → 更新されたURL
+    console.log(info.status); //→ loading,complete
+
+    store.tabData.title = tab.title;
+    store.tabData.url = tab.url;
+
+    chrome.system.memory.getInfo((info) => {
+      console.log('memoryInfo', info);
+    });
+    chrome.system.storage.getInfo((info) => {
+      console.log('storageInfo', info);
+    });
+});
 
 /**
  * フロントに当たるcontent_scripts.jsからのリクエストを処理する
@@ -10,17 +31,17 @@ let store = {
  * @param {function} sendResponse - 拡張機能ならではの関数。addLitener呼ばれた時に自動で追加される？これを実行して引数にフロントに返したい内容を入れる。
  */
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
-  // console.log('msg', msg); // 送られたメッセージをキャッチ
-  // console.log('sender', sender);
-  // console.log('sendResponse', sendResponse);
+  let response = '';
 
   if (msg.query == 'smileAction') {
-    smileAction(msg);
+    response = smileAction(msg);
+  } else if (msg.query == 'tabAction') {
+    response = tabAction(msg);
+  } else if (msg.query == 'commentAction') {
+    response = commentAction(msg);
   };
 
-  console.log('store', store);
-  sendResponse(store.isSmiling); // sendResponseでmsgを送ったスクリプト側にレスを返せる
-  // chrome.tabs.sendMessage(sender.tab.id, store.isSmiling);
+  sendResponse(response); // sendResponseでmsgを送ったスクリプト側にレスを返せる
 
   return true;
 });
@@ -30,27 +51,33 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
  * @param {Object} msg - フロントでpayLoad={{method: String}, {query: String}, {params: String}}のような形で設定した引数が入る
  */
 function smileAction(msg) {
-  console.log('msg', msg);
-
   if (msg.method == 'get') {
     return store.isSmiling;
   } else if (msg.method == 'patch') {
     store.isSmiling = msg.params
     return store.isSmiling
   };
-};
+}
 
+/**
+ * Tabアクションに関する挙動
+ * @param {Object} msg - フロントでpayLoad={{method: String}, {query: String}, {params: String}}のような形で設定した引数が入る
+ */
+function tabAction(msg) {
+  if (msg.method == 'get') {
+    return store.tabData;
+  }
+}
 
-// chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
-  
-//   if (msg == 'getCurrentTab') {
-//     console.log('chrome.tabs', chrome.tabs)
-//     sendResponse(chrome.tabs);
-//     // chrome.tabs.getCurrent((tab)=> {
-//     //   console.log('tab', tab);  
-//     //   sendResponse(tab);
-//     // });  
-//   };
-
-//   return true;
-// });
+/**
+ * Commentアクションに関する挙動
+ * @param {Object} msg - フロントでpayLoad={{method: String}, {query: String}, {params: String}}のような形で設定した引数が入る
+ */
+function commentAction(msg) {
+  if (msg.method == 'get') {
+    return store.isHardComment;
+  } else if (msg.method == 'patch') {
+    store.isHardComment = msg.params
+    return store.isHardComment
+  };
+}

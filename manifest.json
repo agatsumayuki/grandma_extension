@@ -3,6 +3,8 @@
 	"name": "おばあちゃんブラウザ",
 	"version": "0.1",
 	"permissions": [
+  		"system.memory",
+			"system.storage",
 			"tabs"
 	],
 	"content_scripts": [ {
