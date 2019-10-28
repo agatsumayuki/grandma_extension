@@ -1,6 +1,6 @@
 // chromeの拡張機能用APIを使用しないと取得できない
-const nomalFaceImgUrl = chrome.runtime.getURL('images/grandma_icon_48.png');
-const smileFaceImgUrl = chrome.runtime.getURL('images/grandma_icon_48_smile.png');
+const nomalFaceImgUrl = chrome.runtime.getURL('images/grandma_icon_full.png');
+const smileFaceImgUrl = chrome.runtime.getURL('images/grandma_icon_full_smile.png');
 const mildCommentImgUrl = chrome.runtime.getURL('images/mild_comment.png');
 const hardCommentImgUrl = chrome.runtime.getURL('images/hard_comment.png');
 
@@ -47,12 +47,17 @@ function deploy(wx, wy) {
   // スタイル定義
   grandma.id = 'grandma';
   grandma.style.position = 'fixed';
+  grandma.style.cursor = 'pointer';
   grandma.style.right = wx;
   grandma.style.bottom = wy;
+  grandma.style.width = '250px';
   grandma.style.zIndex = 9999; // 一番上に表示するために適当な値
 
   // onclickした時に実行するもの
-  grandma.onclick = move;
+  // grandma.onclick = smile;
+
+  // mousedownした時に実行するもの
+  grandma.addEventListener("mousedown", mdown, false);
 
   // 配置する
   const objBody = document.getElementsByTagName('body').item(0);
@@ -62,9 +67,8 @@ function deploy(wx, wy) {
 /**
  * おばあちゃんの画像を変化させる
  */
-async function move() {
+async function smile() {
   const response = await coreAPI(smileActionGetPayLoad);
-  console.log('response in move', response);
 
   // 笑っている時
   if (response == true) {
@@ -77,6 +81,59 @@ async function move() {
     smileActionPostPayLoad.params = true;
     coreAPI(smileActionPostPayLoad);
   }
+}
+
+// ドラッグで動かす時用に設定
+let x = '';
+let y = '';
+
+// マウスが押された時のメソッド
+async function mdown(e) {
+
+  await smile();
+
+  console.log('mousedownされたよイベント詳細→', e);
+
+  // クラス名に.dragを追加
+  this.classList.add("drag");
+
+  // pageX,Y(クリックのX,Y座標)からoffsetLeft,Topを引くことでクリックした点の座標が要素から見てどの位置にあるのか算出する
+  x = e.pageX - this.offsetLeft;
+  y = e.pageY - this.offsetTop;
+
+  // ムーブイベントにコールバック
+  document.body.addEventListener("mousemove", mmove, false);
+}
+
+// マウスカーソルが動いた時のメソッド
+function mmove(e) {
+  console.log('mousemoveされたよイベント詳細→', e);
+
+  // ドラッグしている要素を取得
+  let drag = document.getElementsByClassName("drag")[0];
+
+  // マウスが動いた場所に要素を動かす
+  drag.style.left = event.pageX - x + "px";
+  drag.style.top = event.pageY - y + "px";
+
+  // マウスボタンが話された時、またはカーソルが外れた時発火
+  drag.addEventListener("mouseup", mup, false);
+  // document.body.addEventListener("mouseleave", mup, false);
+}
+
+// マウスボタンが上がったら発火
+function mup(e) {
+  console.log('mouseupされたよイベント詳細→', e);
+
+  // ドラッグしている要素を取得
+  let drag = document.getElementsByClassName("drag")[0];
+
+  // ムーブバンドラの消去
+  document.body.removeEventListener("mousemove", mmove, false);
+  drag.removeEventListener("mouseup", mup, false);
+
+  // クラス名.dragも消す
+  drag.classList.remove("drag");
 }
 
 /**
@@ -156,5 +213,5 @@ async function commentMove() {
   }
 }
 
-deploy(0, 0);
+deploy(0, '-560px');
 depolyComments('160px', '160px');
