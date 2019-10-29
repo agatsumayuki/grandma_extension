@@ -1,14 +1,7 @@
-// chromeの拡張機能用APIを使用しないと取得できない
-const nomalFaceImgUrl = chrome.runtime.getURL('images/grandma_icon_full.png');
-const smileFaceImgUrl = chrome.runtime.getURL('images/grandma_icon_full_smile.png');
-const mildCommentImgUrl = chrome.runtime.getURL('images/mild_comment.png');
-const hardCommentImgUrl = chrome.runtime.getURL('images/hard_comment.png');
-
-// payLoads from ./src/payLoads.js
-console.log('payLoads', payLoads);
-
-// 禁止するサイト
-const prohibitedSites = ['facebook', 'instagram'];
+// constants は ./src/constants.js
+// coreAPI() は ./src/coreAPI.js
+// imgUrl は ./src/imgUrl.js
+// payLoads は ./src/payLoads.js
 
 /**
  * おばあちゃんの画像を配置する
@@ -18,7 +11,7 @@ const prohibitedSites = ['facebook', 'instagram'];
 function deploy(wx, wy) {
   // 配置準備
   const grandma = document.createElement('img');
-  grandma.src = nomalFaceImgUrl;
+  grandma.src = imgUrl.nomalFaceImgUrl;
 
   // スタイル定義
   grandma.id = 'grandma';
@@ -48,12 +41,12 @@ async function smile() {
 
   // 笑っている時
   if (response == true) {
-    document.getElementById('grandma').src = nomalFaceImgUrl; // 笑うのやめる
+    document.getElementById('grandma').src = imgUrl.nomalFaceImgUrl; // 笑うのやめる
     payLoads.smileActionPostPayLoad.params = false;
     coreAPI(payLoads.smileActionPostPayLoad);
   } else {
     // 笑ってない時
-    document.getElementById('grandma').src = smileFaceImgUrl; // 笑わせる
+    document.getElementById('grandma').src = imgUrl.smileFaceImgUrl; // 笑わせる
     payLoads.smileActionPostPayLoad.params = true;
     coreAPI(payLoads.smileActionPostPayLoad);
   }
@@ -121,19 +114,6 @@ async function getCurrentTab() {
   return response;
 }
 
-/**
- * background.jsとの通信を行う
- * @param {Object} payLoad - リクエストするための引数
- */
-function coreAPI(payLoad) {
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage(payLoad, (response) => {
-      console.log('response in Promise', response);
-      resolve(response);
-    });
-  });
-}
-
 async function depolyComments(wx, wy) {
 
   // 開いているタブによってコメントをだす
@@ -141,7 +121,7 @@ async function depolyComments(wx, wy) {
 
   let isProhibited = false;
 
-  prohibitedSites.forEach((prohibitedSite) => {
+  constants.PROHIBITED_SITES.forEach((prohibitedSite) => {
     if (response.url.includes(prohibitedSite)) {
       isProhibited = true;
     };
@@ -153,7 +133,7 @@ async function depolyComments(wx, wy) {
   if (isProhibited) {
     const grandmaComment = document.createElement('div');
     const pTag = document.createElement('p');
-    const commentContent = document.createTextNode(`${response.title}!? なんだそれ 仕事とかーんけーあんのかー?${prohibitedSites}は見んだねーよぉー`);
+    const commentContent = document.createTextNode(`${response.title}!? なんだそれ 仕事とかーんけーあんのかー?${constants.PROHIBITED_SITES}は見んだねーよぉー`);
     
     pTag.appendChild(commentContent);
     grandmaComment.appendChild(pTag);
