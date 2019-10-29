@@ -9,7 +9,7 @@
 	],
 	"content_scripts": [ {
 		"matches": [ "http://*/*", "https://*/*" ],
-		"js": ["content_scripts.js"],
+		"js": ["src/constants.js", "src/coreAPI.js", "src/imgUrl.js", "src/payLoads.js", "src/store.js", "src/app.js", "content_scripts.js"],
 		"css": ["content_scripts.css"]
 	} ],
   "background": {
