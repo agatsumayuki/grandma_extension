@@ -1,3 +1,39 @@
+/* padding: 7px 10px; => padding-top: 7px, padding-right: 10px;, padding-bottom: 7px;, padding-left: 10px; */
+
 .drag {
   z-index: 1001;
+}
+
+#grandmaComment {
+  position: relative;
+  display: inline-block;
+  margin: 1.5em 15px 1.5em 0;
+  padding: 25px 50px;
+  min-width: 120px;
+  max-width: 100%;
+  color: #555;
+  font-size: 16px;
+  background: #fff;
+  border: 1.4px solid #000000;
+  border-radius: 4px;
+  z-index: 1001;
+}
+
+#grandmaComment:before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 75%;
+  left: 100%;
+  margin-top: -15px;
+  border-top: solid 1.4px #000000;
+  border-left: solid 1.4px #000000;
+  transform: translate(-45%) rotate(135deg);
+  background-color: #fff;
+}
+
+#grandmaComment p {
+  margin: 0 auto;
+  padding: 0;
 }

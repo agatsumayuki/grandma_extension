@@ -138,7 +138,6 @@ async function depolyComments(wx, wy) {
 
   // 開いているタブによってコメントをだす
   const response = await getCurrentTab();
-  console.log('response in deployComments', response);
 
   let isProhibited = false;
 
@@ -148,17 +147,22 @@ async function depolyComments(wx, wy) {
     };
   });
 
+  console.log('response', response);
+  console.log('isProhibited', isProhibited);
+
   if (isProhibited) {
-    const grandmaComment = document.createElement('img');
-    grandmaComment.src = mildCommentImgUrl;
+    const grandmaComment = document.createElement('div');
+    const pTag = document.createElement('p');
+    const commentContent = document.createTextNode(`${response.title}!? なんだそれ 仕事とかーんけーあんのかー?${prohibitedSites}は見んだねーよぉー`);
+    
+    pTag.appendChild(commentContent);
+    grandmaComment.appendChild(pTag);
 
     // スタイル定義
     grandmaComment.id = 'grandmaComment';
     grandmaComment.style.position = 'fixed';
     grandmaComment.style.right = wx;
     grandmaComment.style.bottom = wy;
-    grandmaComment.style.width = '700px';
-    grandmaComment.style.zIndex = 9999;
 
     // 配置する
     const objBody = document.getElementsByTagName('body').item(0);
@@ -167,4 +171,4 @@ async function depolyComments(wx, wy) {
 }
 
 deploy(0, '-560px');
-depolyComments('160px', '160px');
+depolyComments('200px', '10px');
