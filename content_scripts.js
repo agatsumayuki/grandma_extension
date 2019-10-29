@@ -4,32 +4,8 @@ const smileFaceImgUrl = chrome.runtime.getURL('images/grandma_icon_full_smile.pn
 const mildCommentImgUrl = chrome.runtime.getURL('images/mild_comment.png');
 const hardCommentImgUrl = chrome.runtime.getURL('images/hard_comment.png');
 
-// APIへのリクエスト準備
-let smileActionGetPayLoad = {
-  method: 'get',
-  query: 'smileAction',
-  params: null,
-};
-let smileActionPostPayLoad = {
-  method: 'patch',
-  query: 'smileAction',
-  params: true, // デフォルトはtrueであとで変える
-};
-let tabActionGetPayLoad = {
-  method: 'get',
-  query: 'tabAction',
-  params: null,
-};
-let commentActionGetPayLoad = {
-  method: 'get',
-  query: 'commentAction',
-  params: null,
-};
-let commentActionPostPayLoad = {
-  method: 'patch',
-  query: 'commentAction',
-  params: true, // デフォルトはtrueであとで変える
-};
+// payLoads from ./src/payLoads.js
+console.log('payLoads', payLoads);
 
 // 禁止するサイト
 const prohibitedSites = ['facebook', 'instagram'];
@@ -68,18 +44,18 @@ function deploy(wx, wy) {
  * おばあちゃんの画像を変化させる
  */
 async function smile() {
-  const response = await coreAPI(smileActionGetPayLoad);
+  const response = await coreAPI(payLoads.smileActionGetPayLoad);
 
   // 笑っている時
   if (response == true) {
     document.getElementById('grandma').src = nomalFaceImgUrl; // 笑うのやめる
-    smileActionPostPayLoad.params = false;
-    coreAPI(smileActionPostPayLoad);
+    payLoads.smileActionPostPayLoad.params = false;
+    coreAPI(payLoads.smileActionPostPayLoad);
   } else {
     // 笑ってない時
     document.getElementById('grandma').src = smileFaceImgUrl; // 笑わせる
-    smileActionPostPayLoad.params = true;
-    coreAPI(smileActionPostPayLoad);
+    payLoads.smileActionPostPayLoad.params = true;
+    coreAPI(payLoads.smileActionPostPayLoad);
   }
 }
 
@@ -140,7 +116,7 @@ function mup(e) {
  * 現在のタブを取得する
  */
 async function getCurrentTab() {
-  const response = await coreAPI(tabActionGetPayLoad);
+  const response = await coreAPI(payLoads.tabActionGetPayLoad);
   console.log('response in getCulrrentTab func', response);
   return response;
 }
@@ -184,32 +160,9 @@ async function depolyComments(wx, wy) {
     grandmaComment.style.width = '700px';
     grandmaComment.style.zIndex = 9999;
 
-    // onclickした時に実行するもの
-    grandmaComment.onclick = commentMove;
-
     // 配置する
     const objBody = document.getElementsByTagName('body').item(0);
     objBody.appendChild(grandmaComment)
-  }
-}
-
-/**
- * コメントの画像を変化させる
- */
-async function commentMove() {
-  const response = await coreAPI(commentActionGetPayLoad);
-  console.log('response in commnetMove', response);
-
-  // hardコメントの時
-  if (response == true) {
-    document.getElementById('grandmaComment').src = mildCommentImgUrl; // 優しいコメントになる
-    commentActionPostPayLoad.params = false;
-    coreAPI(commentActionPostPayLoad);
-  } else {
-    // hardコメントではない時
-    document.getElementById('grandmaComment').src = hardCommentImgUrl; // 激しいコメントになる
-    commentActionPostPayLoad.params = true;
-    coreAPI(commentActionPostPayLoad);
   }
 }
 

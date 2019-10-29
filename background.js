@@ -4,9 +4,8 @@ let store = {
   tabData: {
     title: '',
     url: ''
-  },
-  isHardComment: false,
-}
+  }
+};
 
 // タブが読み込まれた時に実行する
 chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
@@ -37,8 +36,6 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
     response = smileAction(msg);
   } else if (msg.query == 'tabAction') {
     response = tabAction(msg);
-  } else if (msg.query == 'commentAction') {
-    response = commentAction(msg);
   };
 
   sendResponse(response); // sendResponseでmsgを送ったスクリプト側にレスを返せる
@@ -67,17 +64,4 @@ function tabAction(msg) {
   if (msg.method == 'get') {
     return store.tabData;
   }
-}
-
-/**
- * Commentアクションに関する挙動
- * @param {Object} msg - フロントでpayLoad={{method: String}, {query: String}, {params: String}}のような形で設定した引数が入る
- */
-function commentAction(msg) {
-  if (msg.method == 'get') {
-    return store.isHardComment;
-  } else if (msg.method == 'patch') {
-    store.isHardComment = msg.params
-    return store.isHardComment
-  };
 }
