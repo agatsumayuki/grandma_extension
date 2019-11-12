@@ -1,26 +1,37 @@
-// imgUrl は ./src/imgUrl.js
-// deploy(), mdown(), deployComments() は ./src/app.js
+/** 
+ *  imgUrl は ./src/imgUrl.js
+ *  deploy(), mdown(), deployComments() は ./src/app.js
+*/
 
-// 配置準備
+// 入れる箱の準備
+const grandmaDiv = document.createElement('div');
+grandmaDiv.id = 'grandmaDiv';
+grandmaDiv.style.position = 'fixed';
+grandmaDiv.style.right = '0px';
+grandmaDiv.style.bottom = '0px';
+
+// grandmaの準備
 const grandma = document.createElement('img');
-
-// スタイル定義など
 grandma.src = imgUrl.nomalFaceImgUrl;
 grandma.id = 'grandma';
-grandma.style.position = 'fixed';
-grandma.style.cursor = 'pointer';
-grandma.style.right = 0;
-grandma.style.bottom = '-560px';
-grandma.style.width = '250px';
-grandma.style.zIndex = 9999; // 一番上に表示するために適当な値
-grandma.addEventListener("mousedown", mdown, false); // mousedownした時に実行するもの
+grandma.style.position = 'absolute';
+grandma.style.top = '0px';
+grandmaDiv.addEventListener("mousedown", mdown, false); // mousedownした時に実行するもの
 
-deploy(grandma);
+// 神ホクロの準備(ちょうどホクロの位置に来るように調整)
+const godMole = document.createElement('div');
+godMole.id = 'godMole';
+godMole.style.position = 'absolute';
+godMole.style.top = '24px';
+godMole.style.left = '74px';
 
-// 配置準備
+grandmaDiv.appendChild(godMole);
+grandmaDiv.appendChild(grandma);
+
+deploy(grandmaDiv);
+
+// コメントの準備
 const grandmaComment = document.createElement('div');
-
-// スタイル定義など
 grandmaComment.id = 'grandmaComment';
 grandmaComment.style.position = 'fixed';
 grandmaComment.style.right = '200px';

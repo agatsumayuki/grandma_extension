@@ -1,8 +1,10 @@
-// constants は ./src/constants.js
-// coreAPI() は ./src/coreAPI.js
-// imgUrl は ./src/imgUrl.js
-// payLoads は ./src/payLoads.js
-// store は ./src/store.js
+/** 
+ *  constants は ./src/constants.js 
+ *  coreAPI() は ./src/coreAPI.js
+ *  imgUrl は ./src/imgUrl.js
+ *  payLoads は ./src/payLoads.js
+ *  store は ./src/store.js
+*/
 
 /**
  * おばあちゃんの画像を配置する
@@ -34,16 +36,50 @@ async function smile() {
 }
 
 /**
+ * imgタグを全ておばあちゃんの顔に変えてしまう(本当はここをスクリーンショットにしたかった。ランダムでDOMを作り替えたり、他に何かしたり、してもいいかもしれない。もっと高尚でちゃんと役に立つもの作ろうかなぁ。ばぁちゃん拡張機能を入れるとサイトが「オーガニックになる」ってどうだろう。)
+ */
+function makeEverythingOrganic() {
+  const as = document.getElementsByTagName('a')
+  Array.prototype.forEach.call(as, (a) => {
+    a.textContent = 'いがっぺよ';
+  });  
+  const imgs = document.getElementsByTagName('img')
+  Array.prototype.forEach.call(imgs, (img) => {
+    if (img.id !== 'grandma') {
+      img.src = imgUrl.faceIconUrl;
+      img.srcset = imgUrl.faceIconUrl;
+    }
+  });
+  const ps = document.getElementsByTagName('p')
+  Array.prototype.forEach.call(ps, (p) => {
+    p.textContent = 'ばぁ〜ちゃん作ったんだからぜーんぶ。体に良いんだよ';
+  });
+  const hs = document.getElementsByTagName('h')
+  Array.prototype.forEach.call(hs, (h) => {
+    h.textContent = 'ばぁ〜ちゃん作';
+  });  
+  const h1s = document.getElementsByTagName('h1')
+  Array.prototype.forEach.call(h1s, (h1) => {
+    h1.textContent = 'ばぁ〜ちゃん作だよ';
+  });  
+  const spans = document.getElementsByTagName('span')
+  Array.prototype.forEach.call(spans, (span) => {
+    span.textContent = '農薬は使ってねぇんだよ';
+  });  
+}
+
+/**
  * マウスダウンした時のアクション
  * @param {object} e - eventバンドラ
  */
 async function mdown(e) {
-
-  console.log('e in the mdown!!!!!!!!', e);
-  console.log('e.target.id', e.target.id);
-
+  // grandmaだった場合、微笑みを。ホクロだった場合、makeEverythingOrganicを。
   if (e.target.id == 'grandma') {
+    document.getElementById('grandma').style.cursor = 'grabbing'; // 掴んでるアクションにする
     await smile();
+  } else if (e.target.id == 'godMole') {
+    makeEverythingOrganic();
+    return;
   }
 
   // クラス名に.dragを追加
@@ -75,7 +111,7 @@ function mmove(e) {
 }
 
 /**
- * マウスを動かした時のアクション
+ * マウスを離した時のアクション
  * @param {object} e - eventバンドラ
  */
 function mup(e) {
@@ -86,7 +122,14 @@ function mup(e) {
   document.body.removeEventListener("mousemove", mmove, false);
   drag.removeEventListener("mouseup", mup, false);
 
-  // クラス名.dragも消す
+  // grandmaだった場合は一度付与したstyleのgrabbingを消す
+  drag.childNodes.forEach((childNode) => {
+    if (childNode.id === 'grandma') {
+      childNode.style.cursor = 'grab';
+    }
+  });
+
+  // クラス名.dragを消す
   drag.classList.remove("drag");
 }
 

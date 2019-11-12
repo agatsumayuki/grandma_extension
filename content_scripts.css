@@ -4,6 +4,37 @@
   z-index: 1001;
 }
 
+#grandmaDiv {
+  width: 180px;
+  height: 100px;
+  z-index: 1000;
+}
+
+#grandma {
+  width: 100%;
+  z-index: 1000;
+  cursor: grab;
+}
+
+#godMole {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #000000;
+  border: dotted 1.5px #FFFFFF;
+  z-index: 1001;
+  cursor: help;
+  animation-name: godMole;
+  animation-timing-function: linear;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes godMole {
+	0% {transform: rotate(0deg);}
+	100% {transform: rotate(360deg);}
+}
+
 #grandmaComment {
   position: relative;
   display: inline-block;
